@@ -1,0 +1,169 @@
+{
+  "name": "meeting scheduler own",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7e06c2f4-cbde-42ab-965e-c6fa63c55a3f",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        352,
+        112
+      ],
+      "id": "02d6d57b-16e4-4e5e-82af-e42d4e61a430",
+      "name": "Webhook",
+      "webhookId": "7e06c2f4-cbde-42ab-965e-c6fa63c55a3f"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst date = $json.date;\nconst time = $json.time;\n\n// Combine date & time\nconst start = new Date(`${date}T${time}:00`);\nconst end = new Date(start.getTime() + 30 * 60 * 1000); // +1 hour\n\nreturn [{\n  json: {\n    name: $json.name,\n    email: $json.email,\n    phone: $json.phone,\n    startISO: start.toISOString(),\n    endISO: end.toISOString()\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        112
+      ],
+      "id": "4a7ad63e-f5e4-4e70-b955-8156faaab554",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.userEmail }}, shivakumargaddi853@gmail.com",
+        "subject": "Your Meeting is Confirmed ✅",
+        "message": "=<div style=\"font-family: Arial, sans-serif; line-height: 1.5;\">   <p>Hello {{ $('Webhook').item.json.body.userName }},👋</p>    <p>Your meeting has been successfully scheduled. <br> \n\nSee you there...<br>\nStay Tuned.\n</p>   \n\n<p>📅 <strong>Date & Time:</strong>{{ $('Webhook').item.json.body.preferredDate }} At {{ $('Webhook').item.json.body.preferredTime }}<br>       </p>    <p>     🔗 <strong>Google Meet:</strong><br>     <a href=\"{{$node[\"Google Calendar Tool\"].json.conferenceData.entryPoints[0].uri}}\">       Join Meeting     </a>   </p>    <p>Regards,<br>   <strong>Shiva Kumar</strong></p> </div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        96
+      ],
+      "id": "c8d681ff-6866-4923-b782-d30f47e4bc0a",
+      "name": "Send a message",
+      "webhookId": "d36d0aca-7203-46fc-ad74-59866f9faa49",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3RSszKm1EU2MaUjt",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "gaddishivanani71234@gmail.com",
+          "mode": "list",
+          "cachedResultName": "gaddishivanani71234@gmail.com"
+        },
+        "start": "={{$json.startISO}}",
+        "end": "={{$json.endISO}}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $('Webhook').item.json.body.userEmail }}"
+          ],
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        112
+      ],
+      "id": "bf073570-1fdc-4176-b6d1-e5c284914365",
+      "name": "Google Calendar Tool",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "mcgU42ecWNYIgJra",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Meeting booked successfully\",\n  \"meetLink\": \"{{$node['Google Calendar Tool'].json.conferenceData.entryPoints[0].uri}}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1184,
+        96
+      ],
+      "id": "acc32f22-2621-4729-9fe0-7386eef24c00",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar Tool",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar Tool": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "862d7094-d30b-4535-a24b-358ac916502a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2db7e850a04d89e19ed4141a16dec41a44528e218bc22a15539b9c14fee8d51e"
+  },
+  "id": "IlbNz9r8vahEAAaA",
+  "tags": []
+}
