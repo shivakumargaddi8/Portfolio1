@@ -79,7 +79,7 @@
   pointer-events: none;
 }
 
-.date-time {
+.row.date-time {
   display: flex;
   gap: 10px;
 }
@@ -935,3 +935,4 @@ h1{
 
 
 */
+
