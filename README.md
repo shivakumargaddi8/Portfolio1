@@ -1,10 +1,8 @@
+
 @app.route("/upload", methods=["POST"])
 def upload():
 
     try:
-        # =========================
-        # CHECK FILE
-        # =========================
         if "file" not in request.files:
             return jsonify({"error": "No file uploaded"}), 400
 
@@ -13,10 +11,7 @@ def upload():
         # =========================
         # READ CSV
         # =========================
-        try:
-            df = pd.read_csv(file, encoding="latin1")
-        except Exception as e:
-            return jsonify({"error": f"CSV read error: {str(e)}"}), 400
+        df = pd.read_csv(file, encoding="latin1")
 
         if df.empty:
             return jsonify({"error": "CSV is empty"}), 400
@@ -32,32 +27,31 @@ def upload():
         for col in df.columns:
             col_lower = col.lower()
 
-            # detect score column
-            if any(k in col_lower for k in ["score", "rating", "stars", "feedbackscore"]):
+            if any(k in col_lower for k in ["score","rating","stars"]):
                 score_col = col
 
-            # detect text column
-            elif any(k in col_lower for k in ["review", "text", "comment", "feedback", "message", "description"]):
+            if any(k in col_lower for k in ["review","text","comment","feedback","message"]):
                 review_col = col
 
-        print("Using score column:", score_col)
-        print("Using text column:", review_col)
+        print("Score column:", score_col)
+        print("Text column:", review_col)
 
-        # =========================
-        # ANALYSIS
-        # =========================
+        pos, neg, neu = 0, 0, 0
+
         pos_list, neg_list, neu_list = [], [], []
 
-        for index, row in df.iterrows():
+        # =========================
+        # LOOP EACH ROW (REAL DATA)
+        # =========================
+        for _, row in df.iterrows():
 
             text = ""
             score = None
 
-            # get text
+            # get values safely
             if review_col:
-                text = str(row[review_col])
+                text = str(row[review_col]).strip()
 
-            # get score
             if score_col:
                 try:
                     score = float(row[score_col])
@@ -65,19 +59,24 @@ def upload():
                     score = None
 
             # =========================
-            # PRIORITY → SCORE BASED
+            # PRIORITY → SCORE (REAL DATA)
             # =========================
             if score is not None:
 
                 if score >= 4:
-                    pos_list.append(text)
+                    pos += 1
+                    pos_list.append(str(score))
+
                 elif score <= 2:
-                    neg_list.append(text)
+                    neg += 1
+                    neg_list.append(str(score))
+
                 else:
-                    neu_list.append(text)
+                    neu += 1
+                    neu_list.append(str(score))
 
             # =========================
-            # FALLBACK → ML TEXT
+            # TEXT → ML ONLY IF NO SCORE
             # =========================
             elif text:
 
@@ -87,41 +86,36 @@ def upload():
                 pred = model.predict(vec)[0]
 
                 if pred == "positive":
+                    pos += 1
                     pos_list.append(text)
-                elif pred == "negative":
-                    neg_list.append(text)
-                else:
-                    neu_list.append(text)
 
-        # =========================
-        # COUNTS
-        # =========================
-        pos = len(pos_list)
-        neg = len(neg_list)
-        neu = len(neu_list)
+                elif pred == "negative":
+                    neg += 1
+                    neg_list.append(text)
+
+                else:
+                    neu += 1
+                    neu_list.append(text)
 
         total = pos + neg + neu
 
-        print("POS:", pos, "NEG:", neg, "NEU:", neu)
+        print("REAL COUNTS →", pos, neg, neu)
 
         if total == 0:
-            return jsonify({"error": "No valid data found"}), 400
+            return jsonify({"error": "No valid data"}), 400
 
         # =========================
-        # KEYWORDS (REAL REASONS)
+        # REAL KEYWORDS
         # =========================
         pos_words = top_words(pos_list) if pos_list else []
         neg_words = top_words(neg_list) if neg_list else []
         neu_words = top_words(neu_list) if neu_list else []
 
         # =========================
-        # METRICS
+        # METRICS (ONLY DISPLAY PURPOSE)
         # =========================
         metrics = generate_metrics(total)
 
-        # =========================
-        # RESPONSE
-        # =========================
         return jsonify({
             "positive": pos,
             "negative": neg,
@@ -135,4 +129,4 @@ def upload():
         })
 
     except Exception as e:
-        return jsonify({"error": f"Server error: {str(e)}"}), 500
+        return jsonify({"error": str(e)}), 500
