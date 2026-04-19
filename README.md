@@ -1,9 +1,8 @@
 
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sentiment Analyzer</title>
+  <title>Upload CSV</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -20,9 +19,9 @@
 
     <nav class="menu">
 
-      <a href="index.html" class="active">🏠 <span>Home</span></a>
+      <a href="index.html">🏠 <span>Home</span></a>
       <a href="analyze.html">🧠 <span>Analyze Review</span></a>
-      <a href="upload.html">⬆ <span>Upload CSV</span></a>
+      <a href="upload.html" class="active">⬆ <span>Upload CSV</span></a>
       <a href="dashboard.html">📊 <span>Dashboard</span></a>
       <a href="insights.html">📈 <span>Insights</span></a>
 
@@ -36,62 +35,21 @@
     <!-- ===== TOP BAR ===== -->
     <header class="topbar">
       <button id="menuToggle">☰</button>
-      <h2>Home</h2>
+      <h2>Upload CSV</h2>
     </header>
 
-    <!-- ===== HERO ===== -->
-    <div class="hero">
+    <!-- ===== PAGE ===== -->
+    <div class="page">
 
-      <h1>
-        <span class="ml">Machine Learning</span>–Enabled
-        <span class="cf">Customer Feedback</span> Analysis
-      </h1>
+      <h2>Upload CSV File</h2>
 
-      <p>
-        Analyze customer reviews using
-        <span class="nlp">NLP</span> &
-        <span class="ml">ML</span> to gain
-        <span class="insight">actionable insights</span>.
-      </p>
-
-      <button onclick="location.href='analyze.html'">
-        Analyze Review
-      </button>
-
-      <button onclick="location.href='upload.html'">
-        Upload CSV
-      </button>
-
-    </div>
-
-    <!-- ===== FEATURES ===== -->
-    <div class="features">
-
-      <h2>Features</h2>
-
-      <div class="feature-grid">
-
-        <div class="card">
-          <h3>⚡ Real-time Analysis</h3>
-          <p>Analyze feedback instantly.</p>
-        </div>
-
-        <div class="card">
-          <h3>📊 Bulk Processing</h3>
-          <p>Upload CSV files.</p>
-        </div>
-
-        <div class="card">
-          <h3>📈 Detailed Insights</h3>
-          <p>Comprehensive recommendations.</p>
-        </div>
-
-        <div class="card">
-          <h3>🎯 High Accuracy</h3>
-          <p>Advanced ML models.</p>
-        </div>
-
+      <div class="upload-box">
+        <input type="file" id="csvFile" accept=".csv">
       </div>
+
+      <button onclick="uploadCSV()">Upload and Analyze</button>
+
+      <div id="uploadMessage" class="upload-message"></div>
 
     </div>
 
@@ -99,7 +57,9 @@
 
 </div>
 
-<!-- ===== SIDEBAR SCRIPT ===== -->
+<!-- ===== JS ===== -->
+<script src="script.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -115,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
       sidebar.classList.contains("collapsed"));
   });
 
-  // restore state
+  // restore sidebar state
   const savedState = localStorage.getItem("sidebarState");
 
   if (savedState === "true") {
@@ -128,6 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
+
 
 
 
