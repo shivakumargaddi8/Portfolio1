@@ -1,32 +1,47 @@
+// PIE CHART
+ new Chart(document.getElementById("pieChart"), {
+  type: "doughnut",
+  data: {
+    labels: [" Positive ", " Negative", " Neutral"],
+    datasets: [{
+      data: [pos, neg, neu],
+     backgroundColor: [
+"#0d7941",
+"#710b0b",
+"#2f3438b0"
+],
+      borderWidth: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "65%",
+    plugins: {
+      legend: {
+        position: "bottom"
+      }
+    }
+  },
+  plugins: [{
+    id: "centerText",
+    afterDraw(chart) {
+      const {ctx} = chart;
 
+      ctx.save();
+      ctx.font = "bold 28px Poppins";
+      ctx.fillStyle = "#1f2937";
+      ctx.textAlign = "center";
 
-/* ===== FIX SIDEBAR OVERLAP (FINAL OVERRIDE) ===== */
+      ctx.fillText(confidence + "%", chart.width/2, chart.height/2);
 
-.sidebar {
-  position: fixed !important;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 220px;
-  z-index: 1000;
-}
+      ctx.font = "14px Poppins";
+      ctx.fillStyle = "#9ca3af";
+      ctx.fillText("Sentiment Score", chart.width/2, chart.height/2 + 25);
 
-.main {
-  margin-left: 220px !important;
-  width: calc(100% - 220px);
-  transition: 0.3s;
-}
+      ctx.restore();
+    }
+  }]
+});
 
-.sidebar.collapsed {
-  width: 70px !important;
-}
-
-.main.expanded {
-  margin-left: 70px !important;
-  width: calc(100% - 70px);
-}
-
-/* keep flex layout (IMPORTANT — don't change this) */
-.layout {
-  display: flex !important;
-}
+};
