@@ -1,22 +1,15 @@
+
 function generateInsights(data) {
 
   // =========================
-  // RANDOM % (WITHIN RANGE)
+  // REAL VALUES FROM DATA
   // =========================
 
-  let posPct = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
-  let negPct = Math.floor(Math.random() * (48 - 25 + 1)) + 25;
-  let neuPct = Math.floor(Math.random() * (40  - 20 + 1)) + 20;
+  const total = data.positive + data.negative + data.neutral;
 
-  // =========================
-  // NORMALIZE TO 100%
-  // =========================
-
-  const totalPct = posPct + negPct + neuPct;
-
-  posPct = ((posPct / totalPct) * 100).toFixed(1);
-  negPct = ((negPct / totalPct) * 100).toFixed(1);
-  neuPct = (100 - posPct - negPct).toFixed(1);
+  const posPct = ((data.positive / total) * 100).toFixed(1);
+  const negPct = ((data.negative / total) * 100).toFixed(1);
+  const neuPct = ((data.neutral / total) * 100).toFixed(1);
 
   // =========================
   // WORDS
@@ -40,11 +33,6 @@ function generateInsights(data) {
       `Users frequently praised <b>${posWords}</b>.`,
       `Feedback shows high confidence in quality and usability.`,
       `This suggests a reliable and well-performing product.`
-    ],
-    [
-      `Positive mentions of <b>${posWords}</b> are dominant.`,
-      `Customers are happy with overall service and experience.`,
-      `This builds strong brand value and customer loyalty.`
     ]
   ];
 
@@ -58,11 +46,6 @@ function generateInsights(data) {
       `Negative feedback highlights <b>${negWords}</b>.`,
       `Users are facing challenges impacting overall performance.`,
       `Addressing these problems can improve customer trust.`
-    ],
-    [
-      `Frequent complaints about <b>${negWords}</b> are observed.`,
-      `This indicates gaps in service or product quality.`,
-      `Fixing these issues is critical for better satisfaction.`
     ]
   ];
 
@@ -76,11 +59,6 @@ function generateInsights(data) {
       `Neutral opinions focus on <b>${neuWords}</b>.`,
       `Users neither strongly like nor dislike the product.`,
       `Enhancements can convert them into satisfied customers.`
-    ],
-    [
-      `Feedback around <b>${neuWords}</b> is moderate.`,
-      `This indicates acceptable but not outstanding performance.`,
-      `Improvement opportunities exist to boost satisfaction.`
     ]
   ];
 
@@ -97,7 +75,7 @@ function generateInsights(data) {
   return `
     <h2>📊 Feedback Analysis Summary</h2>
 
-    <h3>🟢 Positive (${pos}%)</h3>
+    <h3>🟢 Positive (${posPct}%)</h3>
     <p>${posLines.join("<br>")}</p>
 
     <h3>🔴 Negative (${negPct}%)</h3>
@@ -107,8 +85,6 @@ function generateInsights(data) {
     <p>${neuLines.join("<br>")}</p>
   `;
 }
-
-
 
 
 
