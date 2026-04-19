@@ -1,63 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sentiment Analyzer</title>
+  <link rel="stylesheet" href="style.css">
 
-
-✅ 1. FIX TOPBAR (IMPORTANT)
-👉 Add this to your CSS:
-CSS
-.topbar {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background: white;
-  padding: 12px 20px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-}
-✅ 2. MAKE MENU BUTTON VISIBLE
-👉 Add this (VERY IMPORTANT):
-CSS
-#menuToggle {
-  font-size: 24px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-
-  /* force visibility */
-  z-index: 1000;
-  position: relative;
+<body>
+<style>
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#f3f4f6;
 }
 
-#menuToggle:hover {
-  background: #1e40af;
-}
-✅ 3. FIX SIDEBAR POSITION
-👉 Add:
-CSS
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100%;
-}
-✅ 4. FIX MAIN ALIGNMENT
-👉 Replace your .main CSS with:
-CSS
-.main {
-  margin-left: 220px;
-  width: 100%;
-  padding: 20px;
-  transition: 0.3s;
+.layout{
+display:flex;
+min-height:100vh;
 }
 
-.main.expanded {
-  margin-left: 70px;
+/* Sidebar */
+
+
+
+.brand{
+font-size:22px;
+font-weight:bold;
+margin-bottom:30px;
 }
-✅ 5. ENSURE BUTTON EXISTS IN HTML
-👉 Your header MUST look like this:
-HTML
-<header class="topbar">
-  <button id="menuToggle">☰</button>
-  <h2>Insights</h2>
-</header>
+
+.menu a{
+display:block;
+color:white;
+text-decoration:none;
+padding:10px;
+margin-bottom:8px;
+border-radius:6px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.menu a.active{
+background:#2563eb;
+}
+</style>
+</head>
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+
+    <div class="brand">
+     <span>Sentiment Analyzer </span>
+    </div>
+
+    <nav class="menu">
+
+<a href="index.html" class="active">🏠 Home</a>
+
+<a href="analyze.html" >🧠 Analyze Review</a>
+
+<a href="upload.html" >⬆ Upload CSV</a>
+
+<a href="dashboard.html" >📊 Dashboard</a>
+
+<a href="insights.html" >📈 Insights</a>
+
+    </nav>
+
+  </aside>
+
+  <!-- ===== MAIN AREA ===== -->
+  <div class="main">
+
+    <!-- TOP BAR -->
+      <header class="topbar">
+      <h2>Home</h2>
+
+      <div class="user">
+      <span class="avatar"></span>
+      </div>
+    </header>
+
+
+
+
+
+
+<div class="hero">
+
+  <h1>
+    <span class="ml">Machine Learning</span>–Enabled
+    <span class="cf">Customer Feedback</span> Analysis
+  </h1>
+
+  <p>
+    Analyze customer reviews using
+    <span class="nlp">NLP</span> &
+    <span class="ml">ML</span> to gain
+    <span class="insight">actionable insights</span>.
+  
+  </p>
+
+  <button onclick="location.href='analyze.html'">
+    Analyze Review
+  </button>
+
+  <button onclick="location.href='upload.html'">
+    Upload CSV
+  </button>
+
+</div>
+
+<div class="features">
+  <h2>Features</h2>
+
+  <div class="feature-grid">
+    <div class="card">
+      <h3>⚡ Real-time Analysis</h3>
+      <p>Analyze feedback instantly.</p>
+    </div>
+
+    <div class="card">
+      <h3>📊 Bulk Processing</h3>
+      <p>Upload CSV files.</p>
+    </div>
+
+    <div class="card">
+      <h3>📈 Detailed Insights</h3>
+      <p>Comprehensive recommendations.</p>
+    </div>
+
+    <div class="card">
+      <h3>🎯 High Accuracy</h3>
+      <p>Advanced ML models.</p>
+    </div>
+  </div>
+</div>
+
+  </div> <!-- main -->
+</div> <!-- layout -->
+
+</body>
+</html>
+
